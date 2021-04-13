@@ -9,7 +9,10 @@ const player1 = {
     weapon: ['kunai', 'axe'],
     attack: function () {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    change: changeHp,
+    element: elHp,
+    render: renderHp
 }
 
 const player2 = {
@@ -20,7 +23,10 @@ const player2 = {
     weapon: ['Ice Scepter', 'Kori Blade'],
     attack: function () {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    change: changeHp,
+    element: elHp,
+    render: renderHp
 }
 
 function createElement(tag, className) {
@@ -54,33 +60,74 @@ function createPlayer(playerProps) {
     return $player;
 }
 
-function showWinner(player) {
+function showWinner(name) {
     const $winner = createElement('div', 'loseTitle');
-    $winner.innerText = player + ' Wins!';
-    return($winner);
+    $winner.innerText = name + ' Wins!';
+    if (!name) {
+        $winner.innerText = 'DRAW!';
+    }
+
+    createReloadButton().addEventListener('click', () => {
+        window.location.reload();
+    });
+
+    return ($winner);
 }
 
-let isLose = false;
+function getRandom(max) {
+    return Math.ceil(Math.random() * max);
+}
 
-function changeHp(player) {
-    const $playerLife = document.querySelector('.player' + player.player + ' .life');
-    player.hp -= Math.ceil(Math.random() * 20);
-    $playerLife.style.width = player.hp + '%';
+function changeHp(hp) {
+    this.hp -= hp;
+    if (this.hp <= 0) {
+        this.hp = 0;
+    }
+}
 
-    if (player.hp <= 0) {
-        isLose = true;
+function elHp() {
+    return document.querySelector('.player' + this.player + ' .life');
+}
+
+function renderHp(playerLife) {
+    playerLife.style.width = this.hp + '%';
+    playerLife.style.width = this.hp + '%';
+}
+
+function createReloadButton() {
+    const $reloadWrap = document.createElement('div');
+    const $reloadBtn = document.createElement('button');
+
+    $reloadWrap.classList.add('reloadWrap');
+    $reloadBtn.classList.add('button');
+
+    $reloadBtn.innerText = 'Restart';
+
+    $reloadWrap.appendChild($reloadBtn);
+    $arenas.appendChild($reloadWrap);
+
+    return $reloadBtn;
+}
+
+
+$randomBtn.addEventListener('click', () => {
+    player1.change(getRandom(20));
+    player2.change(getRandom(20));
+    player1.render(player1.element());
+    player2.render(player2.element());
+
+    if (player1.hp === 0 || player2.hp === 0) {
         $randomBtn.disabled = true;
         $randomBtn.style.cursor = 'not-allowed';
     }
 
-    if (player.hp > 0 && isLose) {
-        $arenas.appendChild(showWinner(player.name));
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        $arenas.appendChild(showWinner(player2.name));
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        $arenas.appendChild(showWinner(player1.name));
+    } else if (player1.hp === 0 && player2.hp === 0) {
+        $arenas.appendChild(showWinner());
     }
-}
-
-$randomBtn.addEventListener('click', () => {
-    changeHp(player1);
-    changeHp(player2);
 })
 
 
