@@ -89,9 +89,9 @@ function elHp() {
     return document.querySelector('.player' + this.player + ' .life');
 }
 
-function renderHp(playerLife) {
-    playerLife.style.width = this.hp + '%';
-    playerLife.style.width = this.hp + '%';
+function renderHp() {
+    this.element().style.width = this.hp + '%';
+
 }
 
 function createReloadButton() {
@@ -113,8 +113,8 @@ function createReloadButton() {
 $randomBtn.addEventListener('click', () => {
     player1.change(getRandom(20));
     player2.change(getRandom(20));
-    player1.render(player1.element());
-    player2.render(player2.element());
+    player1.render();
+    player2.render();
 
     if (player1.hp === 0 || player2.hp === 0) {
         $randomBtn.disabled = true;
