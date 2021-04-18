@@ -172,16 +172,18 @@ function checkKicks(attack, enemy) {
     if (attack.hit !== enemy.defence) {
         player2.change(attack.value);
         console.log(player2.name + ' lost ' + attack.value);
-        generateLogs('hit', player1, player2);
+        generateLogs('hit', player1, player2, attack);
     } else {
+        generateLogs('defence', player1, player2);
         console.log('UPS! ' + player2.name + ' defence ' + enemy.defence);
     }
 
     if (enemy.hit !== attack.defence) {
         player1.change(enemy.value);
         console.log(player1.name + ' lost ' + enemy.value);
-        generateLogs('hit', player2, player1);
+        generateLogs('hit', player2, player1, attack);
     } else {
+        generateLogs('defence', player1, player2);
         console.log('UPS! ' + player1.name + ' defence ' + attack.defence);
     }
 }
@@ -233,16 +235,23 @@ function getDate() {
     return time;
 }
 
-function generateLogs(type, player1, player2) {
+function generateLogs(type, player1, player2, player1Attack) {
     const random = getRandom(logs[type].length - 1);
     const time = getDate();
 
     switch (type) {
         case 'hit':
-            const text = logs[type][random].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
-            const el = `<p>${time} ${text} ${player1.hp}/100</p>`;
+            const hitText = logs[type][random].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
+            const el = `<p>${time} ${hitText}. ${player2.name} потерял ${player1Attack.value} жизней. ${player2.hp}/100</p>`;
             $chat.insertAdjacentHTML('afterbegin', el);
             break;
+
+        case 'defence':
+            const defenceText = logs[type][random].replace('[playerKick]', player2.name).replace('[playerDefence]', player1.name);
+            const defEl = `<p>${time} ${defenceText}. ${player1.name} не потерял жизни. ${player1.hp}/100</p>`;
+            $chat.insertAdjacentHTML('afterbegin', defEl);
+            break;
+
         case 'start':
             const start = logs[type].replace('[time]', time).replace('[player1]', player1.name).replace('[player2]', player2.name);
             const startEl = `<p>${start}</p>`;
