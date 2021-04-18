@@ -1,5 +1,13 @@
 const $arenas = document.querySelector('.arenas');
-const $randomBtn = document.querySelector('button');
+const $formFight = document.querySelector('.control');
+
+const HIT = {
+    head: 30,
+    body: 20,
+    foot: 10
+}
+
+const ATTACK = ['head', 'body', 'foot'];
 
 const player1 = {
     player: 1,
@@ -109,16 +117,65 @@ function createReloadButton() {
     return $reloadBtn;
 }
 
+function enemyAttack() {
+    const hit = ATTACK[getRandom(3) - 1];
+    const defence = ATTACK[getRandom(3) - 1];
 
-$randomBtn.addEventListener('click', () => {
-    player1.change(getRandom(20));
-    player2.change(getRandom(20));
+    return {
+        value: getRandom(HIT[hit]),
+        hit,
+        defence
+    }
+}
+
+function checkKicks (attack, enemy) {
+    if (attack.hit !== enemy.defence) {
+        player2.change(attack.value);
+        alert(player2.name + ' lost ' + attack.value);
+    } else {
+        alert('UPS! ' + player2.name + ' defence ' + enemy.defence);
+    }
+
+    if (enemy.hit !== attack.defence) {
+        player1.change(enemy.value);
+        alert(player1.name + ' lost ' + enemy.value);
+    } else {
+        alert('UPS! ' + player1.name + ' defence ' + attack.defence);
+    }
+}
+
+
+$arenas.appendChild(createPlayer(player1));
+$arenas.appendChild(createPlayer(player2));
+
+$formFight.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const enemy = enemyAttack();
+    const attack = {};
+
+    for (let item of $formFight) {
+
+        if (item.checked && item.name === 'hit') {
+            attack.value = getRandom(HIT[item.value]);
+            attack.hit = item.value;
+        }
+
+        if (item.checked && item.name === 'defence') {
+            attack.defence = item.value;
+        }
+
+        item.checked = false;
+    }
+
+    checkKicks(attack, enemy);
+
     player1.render();
     player2.render();
 
+
     if (player1.hp === 0 || player2.hp === 0) {
-        $randomBtn.disabled = true;
-        $randomBtn.style.cursor = 'not-allowed';
+        $formFight.disabled = true;
+        $formFight.style.cursor = 'not-allowed';
     }
 
     if (player1.hp === 0 && player1.hp < player2.hp) {
@@ -128,10 +185,5 @@ $randomBtn.addEventListener('click', () => {
     } else if (player1.hp === 0 && player2.hp === 0) {
         $arenas.appendChild(showWinner());
     }
+
 })
-
-
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
-
-
