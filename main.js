@@ -174,14 +174,14 @@ function checkKicks(attack, enemy) {
         console.log(player2.name + ' lost ' + attack.value);
         generateLogs('hit', player1, player2, attack);
     } else {
-        generateLogs('defence', player1, player2);
+        generateLogs('defence', player2, player1);
         console.log('UPS! ' + player2.name + ' defence ' + enemy.defence);
     }
 
     if (enemy.hit !== attack.defence) {
         player1.change(enemy.value);
         console.log(player1.name + ' lost ' + enemy.value);
-        generateLogs('hit', player2, player1, attack);
+        generateLogs('hit', player2, player1, enemy);
     } else {
         generateLogs('defence', player1, player2);
         console.log('UPS! ' + player1.name + ' defence ' + attack.defence);
@@ -235,14 +235,14 @@ function getDate() {
     return time;
 }
 
-function generateLogs(type, player1, player2, player1Attack) {
+function generateLogs(type, player1, player2, damageValue) {
     const random = getRandom(logs[type].length - 1);
     const time = getDate();
 
     switch (type) {
         case 'hit':
             const hitText = logs[type][random].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
-            const el = `<p>${time} ${hitText}. ${player2.name} потерял ${player1Attack.value} жизней. ${player2.hp}/100</p>`;
+            const el = `<p>${time} ${hitText}. ${player2.name} потерял ${damageValue.value} жизней. ${player2.hp}/100</p>`;
             $chat.insertAdjacentHTML('afterbegin', el);
             break;
 
@@ -269,9 +269,8 @@ function generateLogs(type, player1, player2, player1Attack) {
             $chat.insertAdjacentHTML('afterbegin', drawEl);
             break;
         default:
-            console.log('Nothing')
+            break;
     }
-
 
 }
 
