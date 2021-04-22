@@ -5,7 +5,6 @@ import { createElement } from "./createElements.js";
 
 const $arenas = document.querySelector('.arenas');
 const $formFight = document.querySelector('.control')
-const $inputs = $formFight.querySelectorAll('input');
 
 export const showWinner = (name) => {
     const $winner = createElement('div', 'loseTitle');
@@ -27,8 +26,7 @@ export const showResult = () => {
     const {name: player2Name, hp: player2Hp} = player2;
 
     if (player1Hp === 0 || player2Hp === 0) {
-        $inputs.disabled = true;
-        $formFight.style.cursor = 'not-allowed';
+        $formFight.style.visibility = 'hidden';
     }
 
     if (player1Hp === 0 && player1Hp < player2Hp) {
