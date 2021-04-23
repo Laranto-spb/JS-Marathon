@@ -1,5 +1,5 @@
 import { getDate, getRandom } from "./utils.js";
-import { logs } from "./logs.js";
+import { logs } from "../data/logs.js";
 
 const $chat = document.querySelector('.chat');
 const time = getDate();
