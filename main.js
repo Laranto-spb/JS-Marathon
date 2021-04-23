@@ -1,6 +1,6 @@
 import { enemyAttack, playerAttack } from "./modules/generateAttacks.js";
 import { generateStart } from "./modules/createLogs.js";
-import { player1, player2 } from "./modules/players.js";
+import { playerOne, playerTwo } from "./modules/players.js";
 import { showResult } from "./modules/showResults.js";
 import { createElement } from "./modules/createElements.js";
 import { checkKicks } from "./modules/checks.js";
@@ -35,9 +35,9 @@ function createPlayer(playerProps) {
     return $player;
 }
 
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
-generateStart('start', player1, player2);
+$arenas.appendChild(createPlayer(playerOne));
+$arenas.appendChild(createPlayer(playerTwo));
+generateStart('start', playerOne, playerTwo);
 
 $formFight.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -47,9 +47,8 @@ $formFight.addEventListener('submit', (e) => {
 
     checkKicks(attack, enemy);
 
-    player1.render();
-    player2.render();
+    playerOne.render();
+    playerTwo.render();
 
     showResult();
-
 })
