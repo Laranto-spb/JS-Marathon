@@ -1,44 +1,102 @@
-export const player1 = {
+import { ATTACK, HIT } from "../data/damage.js";
+import { getRandom } from "./utils.js";
+import { createElement } from "./createElements.js";
+
+class Player {
+    constructor(props) {
+        this.player = props.player,
+            this.name = props.name,
+            this.hp = props.hp,
+            this.img = props.img
+    }
+
+    createPlayer = () => {
+        const $player = createElement('div', 'player' + this.player)
+        const $progressBar = createElement('div', 'progressbar')
+        const $life = createElement('div', 'life')
+        const $name = createElement('div', 'name')
+        const $character = createElement('div', 'character')
+        const $img = createElement('img');
+
+        $life.style.width = this.hp + '%';
+        $name.innerText = this.name;
+        $img.src = this.img;
+
+        $progressBar.appendChild($life);
+        $progressBar.appendChild($name);
+        $character.appendChild($img);
+
+        $player.appendChild($progressBar);
+        $player.appendChild($character);
+
+        return $player;
+
+    }
+
+    change = (hp) => {
+        this.hp -= hp;
+        if (this.hp <= 0) {
+            this.hp = 0;
+        }
+    }
+
+    el = () => {
+        return document.querySelector('.player' + this.player + ' .life');
+    }
+
+    render = () => {
+        this.el().style.width = this.hp + '%';
+    }
+
+    enemyAttack = () => {
+        const hit = ATTACK[getRandom(3) - 1];
+        const defence = ATTACK[getRandom(3) - 1];
+
+        return {
+            value: getRandom(HIT[hit]),
+            hit,
+            defence
+        }
+    }
+
+    playerAttack = () => {
+
+        const $formFight = document.querySelector('.control');
+
+        const attack = {};
+
+        for (let item of $formFight) {
+
+            if (item.checked && item.name === 'hit') {
+                attack.value = getRandom(HIT[item.value]);
+                attack.hit = item.value;
+            }
+
+            if (item.checked && item.name === 'defence') {
+                attack.defence = item.value;
+            }
+
+            item.checked = false;
+        }
+        return attack;
+    }
+
+}
+
+export const playerOne = new Player({
     player: 1,
     name: 'Scorpion',
     hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    weapon: ['kunai', 'axe'],
-    attack: function () {
-        console.log(this.name + ' ' + 'Fight...');
-    },
-    change: changeHp,
-    element: elHp,
-    render: renderHp
-}
+    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif'
+});
 
-export const player2 = {
+export const playerTwo = new Player({
     player: 2,
     name: 'Subzero',
     hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['Ice Scepter', 'Kori Blade'],
-    attack: function () {
-        console.log(this.name + ' ' + 'Fight...');
-    },
-    change: changeHp,
-    element: elHp,
-    render: renderHp
-}
+    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif'
+});
 
-export function changeHp(hp) {
-    this.hp -= hp;
-    if (this.hp <= 0) {
-        this.hp = 0;
-    }
-}
 
-export function elHp() {
-    return document.querySelector('.player' + this.player + ' .life');
-}
-
-export function renderHp() {
-    this.element().style.width = this.hp + '%';
-}
 
 

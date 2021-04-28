@@ -1,4 +1,4 @@
-import { player1, player2 } from "./players.js";
+import { playerOne, playerTwo } from "./players.js";
 import { generateLogs } from "./createLogs.js";
 import { createReloadButton } from "./createElements.js";
 import { createElement } from "./createElements.js";
@@ -22,8 +22,8 @@ export const showWinner = (name) => {
 
 export const showResult = () => {
 
-    const {name: player1Name, hp: player1Hp} = player1;
-    const {name: player2Name, hp: player2Hp} = player2;
+    const {name: player1Name, hp: player1Hp} = playerOne;
+    const {name: player2Name, hp: player2Hp} = playerTwo;
 
     if (player1Hp === 0 || player2Hp === 0) {
         $formFight.style.visibility = 'hidden';
@@ -31,10 +31,10 @@ export const showResult = () => {
 
     if (player1Hp === 0 && player1Hp < player2Hp) {
         $arenas.appendChild(showWinner(player2Name));
-        generateLogs('end', player2, player1);
+        generateLogs('end', playerTwo, playerOne);
     } else if (player2Hp === 0 && player2Hp < player1Hp) {
         $arenas.appendChild(showWinner(player1Name));
-        generateLogs('end', player1, player2);
+        generateLogs('end', playerOne, playerTwo);
     } else if (player1Hp === 0 && player2Hp === 0) {
         $arenas.appendChild(showWinner());
         generateLogs('draw');

@@ -1,4 +1,4 @@
-import { player1, player2 } from "./players.js";
+import { playerOne, playerTwo } from "./players.js";
 import { generateLogs } from "./createLogs.js";
 
 export const checkKicks = (attack, enemy) => {
@@ -8,20 +8,20 @@ export const checkKicks = (attack, enemy) => {
 
 
     if (playerHit !== enemyDefence) {
-        player2.change(playerValue);
-        console.log(player2.name + ' lost ' + playerValue);
-        generateLogs('hit', player1, player2, attack);
+        playerTwo.change(playerValue);
+        console.log(playerTwo.name + ' lost ' + playerValue);
+        generateLogs('hit', playerOne, playerTwo, attack);
     } else {
-        generateLogs('defence', player2, player1);
-        console.log('UPS! ' + player2.name + ' defence ' + enemyDefence);
+        generateLogs('defence', playerTwo, playerOne);
+        console.log('UPS! ' + playerTwo.name + ' defence ' + enemyDefence);
     }
 
     if (enemyHit !== playerDefence) {
-        player1.change(enemyValue);
-        console.log(player1.name + ' lost ' + enemyValue);
-        generateLogs('hit', player2, player1, enemy);
+        playerOne.change(enemyValue);
+        console.log(playerOne.name + ' lost ' + enemyValue);
+        generateLogs('hit', playerTwo, playerOne, enemy);
     } else {
-        generateLogs('defence', player1, player2);
-        console.log('UPS! ' + player1.name + ' defence ' + playerDefence);
+        generateLogs('defence', playerOne, playerTwo);
+        console.log('UPS! ' + playerOne.name + ' defence ' + playerDefence);
     }
 }
