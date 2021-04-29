@@ -12,11 +12,11 @@ const $formFight = document.querySelector('.control');
 class Game {
 
     getPlayers = async () => {
-        return fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+        return await fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
     }
 
     getPlayerTwo = async () => {
-        return fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose').then(res => res.json());
+        return await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose').then(res => res.json());
     }
 
 
@@ -41,20 +41,18 @@ class Game {
         generateStart('start', this.playerOne, this.playerTwo);
 
 
-
         $arenas.appendChild(this.playerOne.createPlayer());
         $arenas.appendChild(this.playerTwo.createPlayer());
 
-        $formFight.addEventListener('submit', (e) => {
+        $formFight.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const enemy = this.playerTwo.enemyAttack();
-            const attack = this.playerOne.playerAttack();
+            const fightsInfo = await this.getFightInfo();
+
+            const enemy = fightsInfo.player2;
+            const attack = fightsInfo.player1;
 
             this.checkKicks(attack, enemy);
-
-            this.playerOne.playerAttack();
-            this.playerTwo.enemyAttack();
 
             this.playerOne.render();
             this.playerTwo.render();
@@ -66,27 +64,59 @@ class Game {
 
     checkKicks = (attack, enemy) => {
 
-            const { value: playerValue, hit: playerHit, defence: playerDefence } = attack;
-            const { value: enemyValue, hit: enemyHit, defence: enemyDefence } = enemy;
+        const { value: playerValue, hit: playerHit, defence: playerDefence } = attack;
+        const { value: enemyValue, hit: enemyHit, defence: enemyDefence } = enemy;
 
 
-            if (playerHit !== enemyDefence) {
-                this.playerTwo.change(playerValue);
-                console.log(this.playerTwo.name + ' lost ' + playerValue);
-                generateLogs('hit', this.playerOne, this.playerTwo, attack);
-            } else {
-                generateLogs('defence', this.playerTwo, this.playerOne);
-                console.log('UPS! ' + this.playerTwo.name + ' defence ' + enemyDefence);
+        if (playerHit !== enemyDefence) {
+            this.playerTwo.change(playerValue);
+            console.log(this.playerTwo.name + ' lost ' + playerValue);
+            generateLogs('hit', this.playerOne, this.playerTwo, attack);
+        } else {
+            generateLogs('defence', this.playerTwo, this.playerOne);
+            console.log('UPS! ' + this.playerTwo.name + ' defence ' + enemyDefence);
+        }
+
+        if (enemyHit !== playerDefence) {
+            this.playerOne.change(enemyValue);
+            console.log(this.playerOne.name + ' lost ' + enemyValue);
+            generateLogs('hit', this.playerTwo, this.playerOne, enemy);
+        } else {
+            generateLogs('defence', playerOne, playerTwo);
+            console.log('UPS! ' + this.playerOne.name + ' defence ' + playerDefence);
+        }
+    }
+
+
+    getFightInfo = async () => {
+
+        let hit, defence;
+
+        for (let item of $formFight) {
+
+            if (item.checked && item.name === 'hit') {
+                hit = item.value;
             }
 
-            if (enemyHit !== playerDefence) {
-                this.playerOne.change(enemyValue);
-                console.log(this.playerOne.name + ' lost ' + enemyValue);
-                generateLogs('hit', this.playerTwo, this.playerOne, enemy);
-            } else {
-                generateLogs('defence', playerOne, playerTwo);
-                console.log('UPS! ' + this.playerOne.name + ' defence ' + playerDefence);
+            if (item.checked && item.name === 'defence') {
+                defence = item.value;
             }
+
+            item.checked = false;
+        }
+
+        const fightInfo = await fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+            method: 'POST',
+            body: JSON.stringify({
+                hit,
+                defence,
+            })
+        }).then(res => res.json());
+
+        return {
+            player1: fightInfo['player1'],
+            player2: fightInfo['player2']
+        };
     }
 
     showWinner = (name) => {
