@@ -1,6 +1,6 @@
 import { game } from "./modules/game.js";
 
-game.start();
+game.start().then(game => game);
 
 
 

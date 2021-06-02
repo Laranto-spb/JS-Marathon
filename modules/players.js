@@ -48,54 +48,9 @@ class Player {
         this.el().style.width = this.hp + '%';
     }
 
-    enemyAttack = () => {
-        const hit = ATTACK[getRandom(3) - 1];
-        const defence = ATTACK[getRandom(3) - 1];
-
-        return {
-            value: getRandom(HIT[hit]),
-            hit,
-            defence
-        }
-    }
-
-    playerAttack = () => {
-
-        const $formFight = document.querySelector('.control');
-
-        const attack = {};
-
-        for (let item of $formFight) {
-
-            if (item.checked && item.name === 'hit') {
-                attack.value = getRandom(HIT[item.value]);
-                attack.hit = item.value;
-            }
-
-            if (item.checked && item.name === 'defence') {
-                attack.defence = item.value;
-            }
-
-            item.checked = false;
-        }
-        return attack;
-    }
-
 }
 
-export const playerOne = new Player({
-    player: 1,
-    name: 'Scorpion',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif'
-});
-
-export const playerTwo = new Player({
-    player: 2,
-    name: 'Subzero',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif'
-});
+export default Player;
 
 
 
